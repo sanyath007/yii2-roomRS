@@ -1,7 +1,5 @@
 Yii 2 Advanced Project Template
 ===============================
-# yii2-roomRS
->Room Reservation System with Yii2 framwork
 
 Yii 2 Advanced Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
 developing complex Web applications with multiple tiers.
@@ -54,3 +52,5 @@ environments/            contains environment-based overrides
 tests                    contains various tests for the advanced application
     codeception/         contains tests developed with Codeception PHP Testing Framework
 ```
+# yii2-roomRS
+> Room Reservation System with Yii2 framwork
