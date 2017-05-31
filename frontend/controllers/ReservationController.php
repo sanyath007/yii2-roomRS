@@ -45,6 +45,41 @@ class ReservationController extends Controller {
                     'dataProvider' => $dataProvider,
         ]);
     }
+    
+    public function actionCheckroom() {
+        $searchModel = new ReservationSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->setSort([
+            'defaultOrder' => ['reserve_sdate' => SORT_DESC]
+        ]);
+        $dataProvider->pagination->pageSize = 5;
+        
+        // Generate calendar event data
+        $reservations = $dataProvider->models;
+        if ($reservations) {
+            foreach ($reservations as $reserve) {
+                $Event = new \yii2fullcalendar\models\Event();
+                $Event->id = $reserve->reserve_id;
+                $Event->title = $reserve->reserve_topic;
+                $Event->start = $reserve->reserve_sdate . ' ' . $reserve->reserve_stime;
+                $Event->end = $reserve->reserve_edate . ' ' . $reserve->reserve_etime;
+                $Event->description = '<b>หัวข้อประชุม : </b>' . $reserve->reserve_topic . '<br>';
+                $Event->description .= '<b>เริ่ม : </b>' . $reserve->reserve_stime . '<br>';
+                $Event->description .= '<b>สิ้นสุด : </b>' . $reserve->reserve_etime . '<br>';
+                $Event->description .= '<b>จำนวนผู้ประชุม : </b>' . $reserve->reserve_att_num . '<br>';
+                $Event->description .= '<b>ห้องประชุม : </b>' . $reserve->room[0]['room_name'] . '<br>';
+                $Event->description .= '<b>ผู้จอง : </b>' . $reserve->reserveUser[0]['person_firstname'] . '  ' . $reserve->reserveUser[0]['person_lastname'];
+                $Event->color = $reserve->room[0]['room_color'];
+                $events[] = $Event;
+            }
+        }
+        
+        return $this->render('checkroom', [
+                'searchModel'   => $searchModel,
+                'dataProvider'  => $dataProvider,
+                'events'        => $events,
+        ]);
+    }
 
     public function actionCancel() {
         $searchModel = new ReservationSearch();
@@ -62,11 +97,24 @@ class ReservationController extends Controller {
         ]);
     }
     
+    public function actionAjaxupstatus($id, $status) {
+        if (!empty($id || $status)) {
+            $model = $this->findModel($id);
+            $model->equipment2Array();            
+            $model->reserve_status = $status;
+            if ($model->save()) {
+                return 'Successfully';
+            }   
+        } else {
+            return 'Fail';
+        }
+    }
+    
     public function actionAjaxcancel($id) {
         if (!empty($id)) {
             $model = $this->findModel($id);
             $model->equipment2Array();            
-            $model->reserve_status = 6;
+            $model->reserve_status = '6';
             if ($model->save()) {
                 return 'Successfully';
             }   
@@ -137,7 +185,12 @@ class ReservationController extends Controller {
 
         return $this->redirect(['index']);
     }
-
+    
+    public function actionPrint($id) {
+        return $this->redirect('print', [
+            'model' => $this->findModel($id),
+        ]);
+    }
     /**
      * Finds the Reservation model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -170,6 +223,7 @@ class ReservationController extends Controller {
         $reservations = Reservation::find()
                 //->joinWith('room')
                 ->where(['between', 'reserve_sdate', $start, $end])
+                ->andWhere(['<>', 'reserve_status', '6'])
                 ->all();
 
         if ($reservations) {
@@ -185,6 +239,7 @@ class ReservationController extends Controller {
                 $Event->description .= '<b>จำนวนผู้ประชุม : </b>' . $reserve->reserve_att_num . '<br>';
                 $Event->description .= '<b>ห้องประชุม : </b>' . $reserve->room[0]['room_name'] . '<br>';
                 $Event->description .= '<b>ผู้จอง : </b>' . $reserve->reserveUser[0]['person_firstname'] . '  ' . $reserve->reserveUser[0]['person_lastname'];
+                $Event->color = $reserve->room[0]['room_color'];
                 $events[] = $Event;
             }
         }

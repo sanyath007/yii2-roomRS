@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\ReservationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'ข้อมูลการจองห้อง';
+$this->title = 'ยกเลิกการจองห้อง';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="reservation-index">
@@ -90,18 +90,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         'buttons' => [
                             'cancel'=>function ($url, $model) {
                                 $t = 'index.php?r=site/view&id='.$model->reserve_id;
-                                return Html::button('ยกเลิก', [
-                                    'value' => Url::to($t), 
-                                    'class' => 'btn btn-danger', 
-                                    'id' => 'btnCancel',
-                                    'onclick' => new yii\web\JsExpression('$.get(
-                                        "'. Yii::$app->urlManager->createUrl(["reservation/ajaxcancel", "id" => $model->reserve_id]) .'", 
-                                        {}, 
-                                        function(data){
-                                            alert(data);
-                                        }
-                                    )'),
-                                ]);
+                                return (!Yii::$app->user->isGuest && (Yii::$app->user->identity->person_id == $model->reserve_user || Yii::$app->user->identity->person_id == '1300200009261' || Yii::$app->user->identity->person_id == '1309900221813')) ? 
+                                    Html::button('ยกเลิก', [
+                                        'value' => Url::to($t), 
+                                        'class' => 'btn btn-danger', 
+                                        'id' => 'btnCancel',
+                                        'onclick' => new yii\web\JsExpression('$.get(
+                                            "'. Yii::$app->urlManager->createUrl(["reservation/ajaxcancel", "id" => $model->reserve_id]) .'", 
+                                            {}, 
+                                            function(data){
+                                                alert(data);
+                                                location.reload();
+                                            }
+                                        )'),
+                                    ]) : '';
                             }
                         ],
                     ],

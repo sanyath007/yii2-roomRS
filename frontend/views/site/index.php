@@ -23,6 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'ajaxEvents' => Url::to(['/reservation/ajaxjsoncalendar']), /** Use and inject events source into event data */
                 'clientOptions' => [
                     'eventClick' => new JsExpression('function(eventObj, jsEvent, view) {
+                        alert(JSON.stringify(eventObj));
                         if(eventObj.url){
                             window.open(eventObj.url);
                             return false;
@@ -53,22 +54,22 @@ $this->params['breadcrumbs'][] = $this->title;
     </div> -->
 
     <div id="fullCalModal" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">×</span> 
-                    <span class="sr-only">close</span>
-                </button>
-                <h4 id="modalTitle" class="modal-title">รายละเอียดกิจกรรม</h4>
-            </div>
-            <div id="modalBody" class="modal-body"></div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <!-- <button class="btn btn-primary"><a id="eventUrl" target="_blank">Event Page</a></button> -->
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span> 
+                        <span class="sr-only">close</span>
+                    </button>
+                    <h4 id="modalTitle" class="modal-title">รายละเอียดกิจกรรม</h4>
+                </div>
+                <div id="modalBody" class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <!-- <button class="btn btn-primary"><a id="eventUrl" target="_blank">Event Page</a></button> -->
+                </div>
             </div>
         </div>
     </div>
-</div>
     
 </div>

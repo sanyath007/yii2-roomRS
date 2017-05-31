@@ -17,6 +17,7 @@ use yii\helpers\Url;
  * @property string $room_contact_tel
  * @property string $room_pay_rate
  * @property string $room_reserv_max
+ * @property string $room_color
  * @property string $room_img1
  * @property string $room_img2
  * @property string $room_img3
@@ -51,7 +52,7 @@ class Room extends \yii\db\ActiveRecord
     {
         return [           
             [['room_capacity'], 'number'],
-            [['room_detail'], 'string'],
+            [['room_detail', 'room_color'], 'string'],
             [['room_name', 'room_size', 'room_locate', 'room_contact_name', 'room_contact_tel', 'room_pay_rate', 'room_reserv_max', 'room_img1', 'room_img2', 'room_img3', 'room_img4', 'room_img5', 'room_status'], 'string', 'max' => 255],
             [['img1'], 'file', 'skipOnEmpty' => true, 'on' => 'update', 'extensions' => 'jpg,png,gif'],
             [['img2'], 'file', 'skipOnEmpty' => true, 'on' => 'update', 'extensions' => 'jpg,png,gif'],
@@ -77,6 +78,7 @@ class Room extends \yii\db\ActiveRecord
             'room_contact_tel' => 'โทรศัพท์ผู้ดูแล',
             'room_pay_rate' => 'อัตราค่าบริการ',
             'room_reserv_max' => 'จำนวนวันที่ที่จ้องได้สูงสุด',
+            'room_color' => 'สี',
             'room_img1' => 'Room Img1',
             'room_img2' => 'Room Img2',
             'room_img3' => 'Room Img3',

@@ -53,4 +53,4 @@ tests                    contains various tests for the advanced application
     codeception/         contains tests developed with Codeception PHP Testing Framework
 ```
 # yii2-roomRS
-> Room Reservation System with Yii2 framwork
+> Room Reservation System with Yii2 framwork.

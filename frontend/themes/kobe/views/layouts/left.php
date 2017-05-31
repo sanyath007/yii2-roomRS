@@ -27,8 +27,8 @@
         </form>
         <!-- /.search form -->
         
-        <?= dmstr\widgets\Menu::widget(
-            [
+        <?php if (!Yii::$app->user->isGuest && (Yii::$app->user->identity->person_id == '1300200009261' || Yii::$app->user->identity->person_id == '1309900221813')) {
+            $menuList = [
                 'options' => ['class' => 'sidebar-menu'],
                 'items' => [
                     ['label' => 'เมนูหลัก', 'options' => ['class' => 'header']],
@@ -43,11 +43,11 @@
                         'url' => '#',
                         'items' => [
                             ['label' => 'ปฎิทินการใช้ห้อง', 'icon' => 'fa fa-calendar-check-o', 'url' => ['/site'],],
-//                            ['label' => 'สอบถามรายการจอง', 'icon' => 'fa fa-cloud-upload', 'url' => ['/debug'],],
+                            ['label' => 'ตรวจสอบห้องว่าง', 'icon' => 'fa fa-file-o', 'url' => ['/reservation/checkroom'],],
 //                            ['label' => 'รายการจองรออนุมัติ', 'icon' => 'fa fa-cart-plus', 'url' => ['/debug'],],
 //                            ['label' => 'รายการยกเลิกรออนุมัติ', 'icon' => 'fa fa-cart-plus', 'url' => ['/debug'],],
-                            ['label' => 'จองใช้ห้อง', 'icon' => 'fa fa-cart-plus', 'url' => ['/reservation/index'],],
-                            ['label' => 'ยกเลิกการจอง', 'icon' => 'fa fa-trash', 'url' => ['/reservation/cancel'],],                            
+                            ['label' => 'รายการจองใช้ห้อง', 'icon' => 'fa fa-cart-plus', 'url' => ['/reservation/index'],],
+                            ['label' => 'ยกเลิกการจองห้อง', 'icon' => 'fa fa-trash', 'url' => ['/reservation/cancel'],],                            
                         ],
                     ],
                     [
@@ -57,29 +57,39 @@
                         'items' => [
                             ['label' => 'ห้องประชุม', 'icon' => 'fa fa-hospital-o', 'url' => ['/room'],],
                             ['label' => 'อุปกรณ์ห้องประชุม', 'icon' => 'fa fa-laptop', 'url' => ['/debug'],],
-//                            [
-//                                'label' => 'แผนก',
-//                                'icon' => 'fa fa-users',
-//                                'url' => '#',
-//                                'items' => [
-//                                    ['label' => 'Level Two', 'icon' => 'fa fa-circle-o', 'url' => '#',],
-//                                    [
-//                                        'label' => 'Level Two',
-//                                        'icon' => 'fa fa-circle-o',
-//                                        'url' => '#',
-//                                        'items' => [
-//                                            ['label' => 'Level Three', 'icon' => 'fa fa-circle-o', 'url' => '#',],
-//                                            ['label' => 'Level Three', 'icon' => 'fa fa-circle-o', 'url' => '#',],
-//                                        ],
-//                                    ],
-//                                ],
-//                            ],
                         ],
                     ],
-                    ['label' => 'รายงาน', 'icon' => 'fa fa-bar-chart', 'url' => ['/report']],
+                    ['label' => 'รายงาน', 'icon' => 'fa fa-bar-chart', 'url' => ['/report']]               
                 ],
-            ]
-        ) ?>
+            ];
+        } else {
+            $menuList = [
+                'options' => ['class' => 'sidebar-menu'],
+                'items' => [
+                    ['label' => 'เมนูหลัก', 'options' => ['class' => 'header']],
+                    [
+                        'label' => 'หน้าหลัก',
+                        'icon' => 'fa fa-home',
+                        'url' => ['/site']
+                    ],
+                    [
+                        'label' => 'ประจำวัน',
+                        'icon' => 'fa fa-calendar',
+                        'url' => '#',
+                        'items' => [
+                            ['label' => 'ปฎิทินการใช้ห้อง', 'icon' => 'fa fa-calendar-check-o', 'url' => ['/site'],],
+                            ['label' => 'ตรวจสอบห้องว่าง', 'icon' => 'fa fa-file-o', 'url' => ['/reservation/checkroom'],],
+//                            ['label' => 'รายการจองรออนุมัติ', 'icon' => 'fa fa-cart-plus', 'url' => ['/debug'],],
+//                            ['label' => 'รายการยกเลิกรออนุมัติ', 'icon' => 'fa fa-cart-plus', 'url' => ['/debug'],],
+                            ['label' => 'รายการจองใช้ห้อง', 'icon' => 'fa fa-cart-plus', 'url' => ['/reservation/index'],],
+                            ['label' => 'ยกเลิกการจองห้อง', 'icon' => 'fa fa-trash', 'url' => ['/reservation/cancel'],],                            
+                        ],
+                    ],                   
+                ],
+            ];
+        } ?>
+        
+        <?= dmstr\widgets\Menu::widget($menuList) ?>
 
     </section>
 

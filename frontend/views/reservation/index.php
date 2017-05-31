@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\ReservationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'ข้อมูลการจองห้อง';
+$this->title = 'รายการจองใช้ห้อง';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="reservation-index">
@@ -28,7 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 //'filterModel' => $searchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-
                     [
                         'format' => 'raw',
                         'label' => 'สถานะ',
@@ -43,7 +42,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $cssClass = 'btn btn-danger';
                             }
 
-                            return '<div class="btn-group">' . 
+                            return (!Yii::$app->user->isGuest && (Yii::$app->user->identity->person_id == '1300200009261' || Yii::$app->user->identity->person_id == '1309900221813')) ? 
+                                    ($model->reserve_status != 6) ? '<div class="btn-group">' . 
                                         Html::button(
                                             $model->reserveStatus[0]['reserve_status_name'],
                                             ['class' => $cssClass]
@@ -51,27 +51,83 @@ $this->params['breadcrumbs'][] = $this->title;
                                         '<button type="button" class="' . $cssClass . ' dropdown-toggle" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li>                                                
-                                                <a href="#">
-                                                    <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-                                                    อนุมัติ
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
-                                                    ไม่อนุมัติ
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-hand-paper-o" aria-hidden="true"></i>
-                                                    ยกเลิก
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>';
+                                        <ul class="dropdown-menu" role="menu">' .
+                                            (($model->reserve_status != 2) ? '<li>'          
+                                                .Html::a('<i class="fa fa-hand-paper-o" aria-hidden="true"></i> อ่านแล้ว', 
+                                                    '#',
+                                                    [ 
+                                                        'id' => 'btnCancel',
+                                                        'onclick' => new yii\web\JsExpression('
+                                                            event.preventDefault();
+                                                            $.get(
+                                                            "'. Yii::$app->urlManager->createUrl(["reservation/ajaxupstatus", "id" => $model->reserve_id, 'status' => '2']) .'", 
+                                                            {}, 
+                                                            function(data){
+                                                                alert(data);
+                                                                location.reload();
+                                                            }
+                                                        )'),
+                                                    ]
+                                                ).                                             
+                                            '</li>' : '') .
+                                            (($model->reserve_status != 3) ? '<li>'          
+                                                .Html::a('<i class="fa fa-thumbs-o-up" aria-hidden="true"></i> อนุมัติ', 
+                                                    '#',
+                                                    [ 
+                                                        'id' => 'btnCancel',
+                                                        'onclick' => new yii\web\JsExpression('
+                                                            event.preventDefault();
+                                                            $.get(
+                                                            "'. Yii::$app->urlManager->createUrl(["reservation/ajaxupstatus", "id" => $model->reserve_id, 'status' => '3']) .'", 
+                                                            {}, 
+                                                            function(data){
+                                                                alert(data);
+                                                                location.reload();
+                                                            }
+                                                        )'),
+                                                    ]
+                                                ).                                             
+                                            '</li>' : '') .
+                                            (($model->reserve_status != 4) ? '<li>'          
+                                                .Html::a('<i class="fa fa-thumbs-o-down" aria-hidden="true"></i>ไม่อนุมัติ', 
+                                                    '#',
+                                                    [ 
+                                                        'id' => 'btnCancel',
+                                                        'onclick' => new yii\web\JsExpression('
+                                                            event.preventDefault();
+                                                            $.get(
+                                                            "'. Yii::$app->urlManager->createUrl(["reservation/ajaxupstatus", "id" => $model->reserve_id, 'status' => '4']) .'", 
+                                                            {}, 
+                                                            function(data){
+                                                                alert(data);
+                                                                location.reload();
+                                                            }
+                                                        )'),
+                                                    ]
+                                                ).
+                                            '</li>' : '') .
+                                            '<li>'          
+                                                .Html::a('<i class="fa fa-hand-rock-o" aria-hidden="true"></i> ยกเลิก', 
+                                                    '#',
+                                                    [ 
+                                                        'id' => 'btnCancel',
+                                                        'onclick' => new yii\web\JsExpression('
+                                                            event.preventDefault();
+                                                            $.get(
+                                                            "'. Yii::$app->urlManager->createUrl(["reservation/ajaxupstatus", "id" => $model->reserve_id, 'status' => '6']) .'", 
+                                                            {}, 
+                                                            function(data){
+                                                                alert(data);
+                                                                location.reload();
+                                                            }
+                                                        )'),
+                                                    ]
+                                                ).
+                                            '</li>' .
+                                        '</ul>
+                                    </div>' : 
+                                    Html::button($model->reserveStatus[0]['reserve_status_name'], ['class' => $cssClass]) : 
+                                    Html::button($model->reserveStatus[0]['reserve_status_name'], ['class' => $cssClass]);
                         },
                         'contentOptions' => ['style' => 'text-align: center;']
                     ],

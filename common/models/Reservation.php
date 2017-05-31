@@ -9,22 +9,25 @@ use yii\db\ActiveRecord;
 /**
  * This is the model class for table "reservation".
  *
- * @property integer $reserv_id
- * @property string $reserv_topic
- * @property integer $reserv_meeting_type
- * @property integer $reserv_att_num
- * @property integer $reserv_room_style
- * @property string $reserv_sdate
- * @property string $reserv_stime
- * @property string $reserv_edate
- * @property string $reserv_etime
- * @property integer $reserv_room
- * @property integer $reserv_user
+ * @property integer $reserve_id
+ * @property string $reserve_topic
+ * @property integer $reserve_meeting_type
+ * @property integer $reserve_att_num
+ * @property integer $reserve_room_style
+ * @property string $reserve_sdate
+ * @property string $reserve_stime
+ * @property string $reserve_edate
+ * @property string $reserve_etime
+ * @property integer $reserve_room
+ * @property integer $reserve_depart
+ * @property integer $reserve_user
+ * $reserve_tel
+ * @property integer $reserve_budget
  * @property integer $reserve_status
- * @property string $reserv_comment
- * @property string $reserv_remark
- * @property string $reserv_pay_rate
- * @property string $reserv_pay_price
+ * @property string $reserve_comment
+ * @property string $reserve_remark
+ * @property string $reserve_pay_rate
+ * @property string $reserve_pay_price
  * @property string $created_at
  * @property string $created_by
  * @property string $modified_at
@@ -46,10 +49,10 @@ class Reservation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['reserve_topic', 'reserve_comment', 'reserve_remark'], 'string'],
-            [['reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_user', 'reserve_status'], 'integer'],
+            [['reserve_topic', 'reserve_tel', 'reserve_comment', 'reserve_remark'], 'string'],
+            [['reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_depart', 'reserve_user', 'reserve_status'], 'integer'],
             [['reserve_sdate', 'reserve_stime', 'reserve_edate', 'reserve_etime', 'created_at', 'modified_at'], 'safe'],
-            [['reserve_pay_rate', 'reserve_pay_price'], 'number'],
+            [['reserve_budget', 'reserve_pay_rate', 'reserve_pay_price'], 'number'],
             [['reserve_equipment'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 255],
         ];
@@ -72,7 +75,10 @@ class Reservation extends \yii\db\ActiveRecord
             'reserve_etime' => 'Reserv Etime',
             'reserve_room' => 'Reserv Room',
             'reserve_equipment' => 'อุปกรณ์',
+            'reserve_depart' => 'กลุ่มงาน',
             'reserve_user' => 'Reserv User',
+            'reserve_tel' => 'เบอร์ติดต่อภายใน',
+            'reserv_budget' => 'งบประมาณ',
             'reserve_status' => 'Reserve Status',
             'reserve_comment' => 'Reserv Comment',
             'reserve_remark' => 'Reserv Remark',
@@ -125,8 +131,14 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ReserveStatus::classname(), ['reserve_status_id' => 'reserve_status']);
     }
+    
     public function getReserveUser()
     {
         return $this->hasMany(User2::classname(), ['person_id' => 'reserve_user']);
+    }
+    
+        public function getReserveDepart()
+    {
+        return $this->hasMany(Department::classname(), ['depart_id' => 'reserve_depart']);
     }
 }

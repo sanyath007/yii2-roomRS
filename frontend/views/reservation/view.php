@@ -15,16 +15,33 @@ $this->params['breadcrumbs'][] = $this->title;
    <div class="panel panel">
         <div class="panel-heading"><h3><i class="fa fa-calendar"></i> <?= Html::encode($this->title) ?></h3></div>
         <div class="panel-body">
-
+            
             <p>
-                <?= Html::a('Update', ['update', 'id' => $model->reserve_id], ['class' => 'btn btn-primary']) ?>
-                <?= Html::a('Delete', ['delete', 'id' => $model->reserve_id], [
-                    'class' => 'btn btn-danger',
-                    'data' => [
-                        'confirm' => 'Are you sure you want to delete this item?',
-                        'method' => 'post',
-                    ],
-                ]) ?>
+                <?php $chkStatus = in_array($model->reserve_status, ['3', '4', '5', '6']); ?>
+                <?php if (!Yii::$app->user->isGuest && $chkStatus == '' && (Yii::$app->user->identity->person_id == $model->reserve_user || Yii::$app->user->identity->person_id == '1300200009261' || Yii::$app->user->identity->person_id == '1309900221813')) : ?>
+                    <?= Html::a('<i class="fa fa-pencil-square-o" aria-hidden="true"></i> แก้ไข', [
+                            'update', 
+                            'id' => $model->reserve_id
+                        ], [
+                            'class' => 'btn btn-primary'
+                        ]
+                    ) ?>
+                    <?= Html::a('<i class="fa fa-times" aria-hidden="true"></i> ลบ', [
+                            'delete', 
+                            'id' => $model->reserve_id
+                        ], [
+                            'class' => 'btn btn-danger',
+                            'data' => [
+                                'confirm' => 'Are you sure you want to delete this item?',
+                                'method' => 'post',
+                            ],
+                        ]
+                    ) ?>
+
+                    <a href="print/print.php?id=<?=$model->reserve_id ?>" class="btn btn-warning" target="_blank">
+                        <i class="fa fa-print" aria-hidden="true"></i> พิมพ์
+                    </a>
+                <?php endif; ?>
             </p>
 
             <?= DetailView::widget([
@@ -75,6 +92,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => 'ผู้จอง',
                         'value' => 'คุณ' . $model->reserveUser[0]['person_firstname'] . '  ' . $model->reserveUser[0]['person_lastname'],            
+                        'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
+                        'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
+                    ],
+                    [
+                        'label' => 'กลุ่มงาน',
+                        'value' => $model->reserveDepart[0]['depart_name'],            
                         'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
                         'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
                     ],
