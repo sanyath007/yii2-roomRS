@@ -7,7 +7,7 @@ use yii\web\JsExpression;
 use kartik\widgets\DatePicker;
 use kartik\widgets\TimePicker;
 
-use common\models\ReserveStatus;
+//use common\models\ReserveStatus;
 use common\models\ReserveLayout;
 use common\models\Room;
 use common\models\RoomEquipment;

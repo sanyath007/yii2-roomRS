@@ -185,17 +185,20 @@
     <body>
         <?php
         // Set connect db
-        $db = new PDO("mysql:host=localhost; dbname=room_db; charset=utf8", 'root', '4621008811');
+        $db = new PDO("mysql:host=localhost; dbname=room_db; charset=utf8", 'root', '1');
         $db->exec("set names utf8");
         $db->exec("COLLATE utf8_general_ci");
         
         // Set the PDO error mode to exception
         $sql = "select 
-        DATE_FORMAT(r.reserve_sdate,'%d') AS date,
-        DATE_FORMAT(r.reserve_sdate,'%m') AS month,
-        DATE_FORMAT(r.reserve_sdate,'%Y')+543 AS year,
-	DATE_FORMAT(r.reserve_stime,'%H:%i') AS start_time, 
-	DATE_FORMAT(r.reserve_etime,'%H:%i') AS end_time, 
+        DATE_FORMAT(r.reserve_date,'%d') AS date,
+        DATE_FORMAT(r.reserve_date,'%m') AS month,
+        DATE_FORMAT(r.reserve_date,'%Y')+543 AS year,
+		DATE_FORMAT(r.reserve_sdate,'%d') AS sdate,
+        DATE_FORMAT(r.reserve_sdate,'%m') AS smonth,
+        DATE_FORMAT(r.reserve_sdate,'%Y')+543 AS syear,
+		DATE_FORMAT(r.reserve_stime,'%H:%i') AS start_time, 
+		DATE_FORMAT(r.reserve_etime,'%H:%i') AS end_time, 
         r.reserve_id, r.reserve_topic, reserve_activity_type, r.reserve_room, r.reserve_tel, 
         reserve_layout, reserve_equipment, reserve_depart, reserve_user, reserve_budget, reserve_att_num,
         CONCAT(t.prefix_name, p.person_firstname, '  ', p.person_lastname) as person_name, 
@@ -217,9 +220,9 @@
 //            var_dump($stmt);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
 //            var_dump($row);            
-            $date = (int)$row['date'];
-            $month = $row['month'];
-            $year = $row['year'];            
+            $date = (int)$row['sdate'];
+            $month = $row['smonth'];
+            $year = $row['syear'];            
             $start_time = $row['start_time'];
             $end_time = $row['end_time'];
             
@@ -255,7 +258,7 @@
                                 <td colspan="2">
                                     <p style="margin: -8 0 0 470px; padding: 2px;">
                                         วันที่
-                                        <?php echo $date; ?>  <?php echo thaimonth($month); ?>  <?php echo $year; ?>
+                                        <?php echo (int)$row['date']; ?>  <?php echo thaimonth($row['month']); ?>  <?php echo $row['syear']; ?>
                                     </p>
                                 </td>
                             </tr>
@@ -408,7 +411,7 @@
                                     
                                     <p style="float: left; padding: 0px; margin:-25 0 0 420px;">จำนวนผู้เข้าร่วมประชุม</p>
                                     <p class="UnderlineTagp" style="width: 65px; float: left; padding: 0px; margin:-25 0 0 550px;">
-                                        &nbsp;&nbsp;<?= $row['reserve_att_num']; ?> ท่าน
+                                        &nbsp;&nbsp;<?= $row['reserve_att_num']; ?> ราย
                                     </p>
                                 </div>
                             </td>
@@ -455,11 +458,11 @@
                                         <?php echo($row['reserve_room'] == 4 ? 'R' : '&pound;'); ?>
                                     </span> 
                                     ห้องประชุม Audit เวชระเบียน&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <span style='font-family:"Wingdings 2"'>
+                                    <!--<span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_room'] == 6 ? 'R' : '&pound;'); ?>
                                     </span> 
                                     อื่นๆ (โปรด ระบุ) <?php echo $row['others']; ?>
-                                </p>
+                                --></p>
 
                             </td>
                         </tr>
@@ -549,7 +552,7 @@
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_layout'] == 5 ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    แบบโรงภาพยนต์&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                   
+                                    แบบโรงภาพยนต์&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                            
                                     
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_layout'] == 6 ? 'R' : '&pound;'); ?>
