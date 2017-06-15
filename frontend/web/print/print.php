@@ -185,20 +185,20 @@
     <body>
         <?php
         // Set connect db
-        $db = new PDO("mysql:host=localhost; dbname=room_db; charset=utf8", 'root', '1');
+        $db = new PDO("mysql:host=localhost; dbname=room_db; charset=utf8", 'root', '4621008811');
         $db->exec("set names utf8");
         $db->exec("COLLATE utf8_general_ci");
         
         // Set the PDO error mode to exception
         $sql = "select 
-        DATE_FORMAT(r.reserve_date,'%d') AS date,
-        DATE_FORMAT(r.reserve_date,'%m') AS month,
-        DATE_FORMAT(r.reserve_date,'%Y')+543 AS year,
-		DATE_FORMAT(r.reserve_sdate,'%d') AS sdate,
+        DATE_FORMAT(r.created_at,'%d') AS date,
+        DATE_FORMAT(r.created_at,'%m') AS month,
+        DATE_FORMAT(r.created_at,'%Y')+543 AS year,
+        DATE_FORMAT(r.reserve_sdate,'%d') AS sdate,
         DATE_FORMAT(r.reserve_sdate,'%m') AS smonth,
         DATE_FORMAT(r.reserve_sdate,'%Y')+543 AS syear,
-		DATE_FORMAT(r.reserve_stime,'%H:%i') AS start_time, 
-		DATE_FORMAT(r.reserve_etime,'%H:%i') AS end_time, 
+	DATE_FORMAT(r.reserve_stime,'%H:%i') AS start_time, 
+	DATE_FORMAT(r.reserve_etime,'%H:%i') AS end_time, 
         r.reserve_id, r.reserve_topic, reserve_activity_type, r.reserve_room, r.reserve_tel, 
         reserve_layout, reserve_equipment, reserve_depart, reserve_user, reserve_budget, reserve_att_num,
         CONCAT(t.prefix_name, p.person_firstname, '  ', p.person_lastname) as person_name, 
@@ -486,11 +486,11 @@
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo(($equipments[0] == 1 || $equipments[1] == 1 || $equipments[2] == 1 || $equipments[3] == 1) ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    คอมพิวเตอร์ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    ไมโครโฟน&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo(($equipments[0] == 2 || $equipments[1] == 2 || $equipments[2] == 2 || $equipments[3] == 2) ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    Projector 
+                                    คอมพิวเตอร์
                                 </p>
                             </td>
                         </tr>
@@ -501,13 +501,16 @@
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo(($equipments[0] == 3 || $equipments[1] == 3 || $equipments[2] == 3 || $equipments[3] == 3) ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    Visualizer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    Projector&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo(($equipments[0] == 4 || $equipments[1] == 4 || $equipments[2] == 4 || $equipments[3] == 4) ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    ไมโครโฟน
+                                    Visualizer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span style='font-family:"Wingdings 2"'>
+                                        <?php echo(($equipments[0] == 9 || $equipments[1] == 9 || $equipments[2] == 9 || $equipments[3] == 9) ? 'R' : '&pound;'); ?>
+                                    </span> 
+                                    ไม่ใช้
                                 </p>
-
                             </td>
                         </tr>
                         
@@ -520,11 +523,11 @@
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_layout'] == 1 ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    แบบจัดงานเลี้ยง&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    แบบตัว U &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_layout'] == 2 ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    แบบจัดงานเลี้ยงโต๊ะกลม 
+                                    แบบห้องประชุม
                                 </p>
                             </td>
                         </tr>
@@ -540,7 +543,7 @@
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_layout'] == 4 ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    แบบห้องประชุม
+                                    แบบโรงภาพยนต์
                                 </p>
 
                             </td>
@@ -552,12 +555,12 @@
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_layout'] == 5 ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    แบบโรงภาพยนต์&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                            
+                                    แบบจัดงานเลี้ยง&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                            
                                     
                                     <span style='font-family:"Wingdings 2"'>
                                         <?php echo($row['reserve_layout'] == 6 ? 'R' : '&pound;'); ?>
                                     </span> 
-                                    แบบตัว U
+                                    แบบจัดงานเลี้ยงโต๊ะกลม
                                 </p>
                             </td>
                         </tr>

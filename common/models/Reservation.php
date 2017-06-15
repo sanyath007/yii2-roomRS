@@ -21,7 +21,7 @@ use yii\db\ActiveRecord;
  * @property integer $reserve_room
  * @property integer $reserve_depart
  * @property integer $reserve_user
- * $reserve_tel
+ * @property integer $reserve_tel
  * @property integer $reserve_budget
  * @property integer $reserve_status
  * @property string $reserve_comment
@@ -42,19 +42,17 @@ class Reservation extends \yii\db\ActiveRecord
     {
         return 'reservation';
     }
-
+    
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['reserve_topic', 'reserve_tel', 'reserve_comment', 'reserve_remark'], 'string'],
+            [['reserve_topic', 'reserve_tel', 'reserve_comment', 'reserve_remark', 'created_by', 'modified_by'], 'string'],
             [['reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_depart', 'reserve_user', 'reserve_status'], 'integer'],
-            [['reserve_sdate', 'reserve_stime', 'reserve_edate', 'reserve_etime', 'created_at', 'modified_at'], 'safe'],
             [['reserve_budget', 'reserve_pay_rate', 'reserve_pay_price'], 'number'],
-            [['reserve_equipment'], 'safe'],
-            [['created_by', 'modified_by'], 'string', 'max' => 255],
+            [['reserve_topic', 'reserve_sdate', 'reserve_stime', 'reserve_edate', 'reserve_etime', 'reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_equipment', 'reserve_depart', 'created_at', 'modified_at'], 'safe'],
         ];
     }
 
@@ -64,11 +62,11 @@ class Reservation extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'reserve_id' => 'Reserv ID',
-            'reserve_topic' => 'Reserv Topic',
-            'reserve_activity_type' => 'Activity Type',
-            'reserve_att_num' => 'Reserv Att Num',
-            'reserve_layout' => 'Layout',
+            'reserve_id' => 'ID',
+            'reserve_topic' => 'หัวข้อ',
+            'reserve_activity_type' => 'ประเภทกิจกรรม',
+            'reserve_att_num' => 'จำนวนผู้เข้าร่วม',
+            'reserve_layout' => 'การจัดห้อง',
             'reserve_sdate' => 'Reserv Sdate',
             'reserve_stime' => 'Reserv Stime',
             'reserve_edate' => 'Reserv Edate',
@@ -104,6 +102,12 @@ class Reservation extends \yii\db\ActiveRecord
                     return implode(',', $this->reserve_equipment);
                 },
             ],
+            [
+                'class' => \yii\behaviors\TimestampBehavior::className(),
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'modified_at',
+                'value' => new \yii\db\Expression('NOW()'),                
+            ]         
         ];
     }
 

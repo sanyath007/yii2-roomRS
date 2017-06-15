@@ -54,6 +54,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
                     ],
                     [
+                        'label' => 'วันที่จอง',
+                        'value' => $model->created_at,            
+                        'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
+                        'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
+                    ],
+                    [
                         'label' => 'หัวข้อการประชุม',
                         'value' => $model->reserve_topic,            
                         'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag

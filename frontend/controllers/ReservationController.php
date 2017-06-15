@@ -10,6 +10,7 @@ use common\models\Room;
 use common\models\RoomUploads;
 use common\models\ReserveLayout;
 use common\models\Reservation;
+use common\models\Department;
 use frontend\models\ReservationSearch;
 
 /**
@@ -246,5 +247,39 @@ class ReservationController extends Controller {
 
         return $events;
     }
-
+    
+    public function actionAjaxdepart($faction)
+    {
+        if (Yii::$app->request->isAjax) {
+            $departments = Department::find()->where(['faction_id' => $faction])->all();  
+            
+            $html = '<option value="">--- กรุณาเลือก ---</option>';
+            foreach($departments as $dept)
+            {
+                $html .= '<option value="' . $dept->depart_id . '">' . $dept->depart_name . '</option>';
+            }
+        
+            return $html;
+        }
+    }
+    
+    public function actionAjaxchkroom($room, $sdate, $stime, $edate, $etime)
+    {
+        if (Yii::$app->request->isAjax) {
+            $model = Reservation::find()
+                        ->where(['reserve_room' => $room])  
+                        ->andWhere(['between', 'reserve_sdate', $sdate, $edate])
+                        ->andWhere(['between', 'reserve_stime', $stime, $etime])->all();
+//            print_r($model);
+            return (!$model) ? '1' : '0';
+//            [
+//                'status' => '1',
+//                'msg'   => 'Successfully'
+//            ] : [
+//                'status' => '0',
+//                'msg'   => 'Room not empty'
+//            ];
+        }
+    }
+    
 }

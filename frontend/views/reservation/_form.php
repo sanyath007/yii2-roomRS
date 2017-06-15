@@ -13,6 +13,7 @@ use common\models\Room;
 use common\models\RoomEquipment;
 use common\models\ActivityType;
 use common\models\Department;
+use common\models\Faction;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Reservation */
@@ -40,75 +41,6 @@ use common\models\Department;
             ],
         ]); ?>        
         
-        <div class="row">        
-            <div class="col-md-8">            
-                
-                <?= $form->field($model, 'reserve_room')
-                         ->dropDownList(ArrayHelper::map(Room::find()->All(), 'room_id', 'room_name'),
-                            [
-                                'onchange' => new JsExpression('$.get(
-                                    "'. Yii::$app->urlManager->createUrl(["reservation/ajaximage"]) .'", 
-                                    { tbl: "Room", id: $(this).val() }, 
-                                    function(data){                                        
-                                        $("#img_room").html(data);
-                                    }
-                                )')
-                            ]
-                         )
-                         ->label('ห้องประชุม') ?>
-                
-                <?= $form->field($model, 'reserve_depart')
-                         ->dropDownList(ArrayHelper::map(Department::find()->All(), 'depart_id', 'depart_name'))
-                         ->label('กลุ่มงาน') ?>
-                
-                <?= $form->field($model, 'reserve_topic')
-                         ->textInput()
-                         ->label('หัวข้อการประชุม') ?>
-                
-                <?= $form->field($model, 'reserve_activity_type')
-                         ->dropDownList(ArrayHelper::map(ActivityType::find()->All(), 'activity_type_id', 'activity_type_name'))
-                         ->label('ประเภทการประชุม') ?>
-                
-                <?= $form->field($model, 'reserve_comment')->textarea(['rows' => 6])->label('รายละเอียด') ?>
-
-                <?= $form->field($model, 'reserve_att_num')->textInput()->label('จำนวนผู้เข้าร่วมประชุม') ?>
-
-                <?= $form->field($model, 'reserve_layout')
-                         ->dropDownList(ArrayHelper::map(ReserveLayout::find()->All(), 'reserve_layout_id', 'reserve_layout_name'),
-                            [
-                                'onchange' => new JsExpression('$.get(
-                                    "'. Yii::$app->urlManager->createUrl(['reservation/ajaximage']) .'",
-                                    { tbl: "ReserveLayout", id: $(this).val() },
-                                    function(data){
-                                        $("#img_reserve_layout").html(data);
-                                    }
-                                )')
-                            ]
-                        )->label('การจัดห้อง') ?>
-
-            </div>
-
-            <div class="col-md-4">
-                
-                <div class="row">
-                    <div class="col-md-12">
-                        <a href="#" id="img_room" class="thumbnail">
-                            <img src="./uploads/rooms/<?= $roomImg ?>" alt="<?= $roomImg ?>">
-                        </a>                        
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-12">
-                        <a href="#" class="thumbnail" id="img_reserve_layout">
-                            <img src="./img/layouts/BQ.jpg" alt="Banquet">
-                        </a>                        
-                    </div>
-                </div>
-
-            </div>
-        </div><!--/.row -->
-
         <div class="row">
             <div class="col-md-8">                       
 
@@ -124,7 +56,11 @@ use common\models\Department;
                             'autoclose' => true,
                             'format' => 'yyyy-mm-dd',
                             'todayHighlight' => true
-                        ]
+                        ],
+                        'pluginEvents' => [
+                            'hide' => 'function(e) { console.log(e); }',
+                            'changeDate' => 'function(e) { $("#reservation-reserve_edate").val($("#reservation-reserve_sdate").val()); }',
+                        ],
                     ]
                 )->label('วันที่เริ่ม') ?>
                 
@@ -179,10 +115,135 @@ use common\models\Department;
 
             </div>
         </div><!--/.row -->
+        
+        <div class="row">        
+            <div class="col-md-8">
+                
+                <div class="form-group col-sm-offset-2">
+                    <label class="control-label col-sm-3" for="reservation-reserve_faction">กลุ่มภารกิจ</label>
+                    <div class="col-sm-9">
+                        <?= HTML::dropDownList(
+                            'reservation-reserve_faction',
+                            null,
+                            ArrayHelper::map(Faction::find()->where(['is_actived' => 'Y'])->all(), 'faction_id', 'faction_name'),
+                            [
+                                'id'        => 'reservation-reserve_faction',
+                                'class'     => 'form-control',
+                                'prompt'    => '--- กรุณาเลือก ---',
+                                'onchange'  => new JsExpression('
+                                    $.get("'. Yii::$app->urlManager->createUrl(['reservation/ajaxdepart']) .'", 
+                                        { faction : $("#reservation-reserve_faction").val() }, 
+                                        function(data){
+                                            $("#reservation-reserve_depart").html(data)
+                                        }
+                                    )
+                                ')
+                            ]
+                        ) ?>
+                        <div class="help-block help-block-error "></div>
+                    </div>
+                </div>
+                
+                <?= $form->field($model, 'reserve_depart')
+                         ->dropDownList(ArrayHelper::map(Department::find()->All(), 'depart_id', 'depart_name'), ['prompt' => '--- กรุณาเลือก ---'])
+                         ->label('หน่วยงานผู้จอง') ?>
+                
+                <?= $form->field($model, 'reserve_tel')
+                         ->textInput()
+                         ->label('เบอร์ติดต่อภายใน') ?>
+                
+                <?= $form->field($model, 'reserve_room')
+                         ->dropDownList(ArrayHelper::map(Room::find()->All(), 'room_id', 'room_name'),
+                            [
+                                'prompt'    => '--- กรุณาเลือก ---',
+                                'onchange' => new JsExpression(
+                                    '$.get("'. Yii::$app->urlManager->createUrl(["reservation/ajaximage"]) .'", 
+                                        { tbl: "Room", id: $(this).val() }, 
+                                        function(data){                                        
+                                            $("#img_room").html(data);
+                                        }
+                                    );
+                                    $.get("'. Yii::$app->urlManager->createUrl(["reservation/ajaxchkroom"]) .'", 
+                                        { 
+                                            room: $(this).val(),
+                                            sdate: $("#reservation-reserve_sdate").val(),
+                                            stime: $("#reservation-reserve_stime").val(),
+                                            edate: $("#reservation-reserve_edate").val(),
+                                            etime: $("#reservation-reserve_etime").val()
+                                        }, 
+                                        function(data){
+                                            if(data==0){
+                                                alert("ห้องไม่ว่างครับ");
+                                                $("#hasError").val(1);
+                                            }else{
+                                                alert("ห้องว่างครับ");
+                                                $("#hasError").val(0);
+                                            }
+                                        }
+                                    );'
+                                )
+                            ]
+                         )
+                         ->label('ห้องประชุม') ?>
+                
+                <?= $form->field($model, 'reserve_activity_type')
+                        ->dropDownList(ArrayHelper::map(ActivityType::find()->All(), 'activity_type_id', 'activity_type_name'), [
+                            'prompt'    => '--- กรุณาเลือก ---',
+                        ])
+                        ->label('ประเภทกิจกรรม') ?>
+                
+                <?= $form->field($model, 'reserve_topic')
+                         ->textInput()
+                         ->label('หัวข้อ') ?>
+                <?php // Set textInput options
+                    $attNumOptions = ['maxlength' => true]; 
+                    if ($model->isNewRecord) {
+                        $attNumOptions = array_merge($attNumOptions, ['value' => '1']);
+                    }
+                ?>
+                <?= $form->field($model, 'reserve_att_num')->textInput($attNumOptions)->label('จำนวนผู้เข้าร่วม') ?>
+
+                <?= $form->field($model, 'reserve_layout')
+                         ->dropDownList(ArrayHelper::map(ReserveLayout::find()->All(), 'reserve_layout_id', 'reserve_layout_name'),
+                            [
+                                'onchange' => new JsExpression('$.get(
+                                    "'. Yii::$app->urlManager->createUrl(['reservation/ajaximage']) .'",
+                                    { tbl: "ReserveLayout", id: $(this).val() },
+                                    function(data){
+                                        $("#img_reserve_layout").html(data);
+                                    }
+                                )')
+                            ]
+                        )->label('การจัดห้อง') ?>
+
+            </div>
+
+            <div class="col-md-4">
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="#" id="img_room" class="thumbnail">
+                            <img src="./uploads/rooms/<?= $roomImg ?>" alt="<?= $roomImg ?>">
+                        </a>                        
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="#" class="thumbnail" id="img_reserve_layout">
+                            <img src="./img/layouts/U.jpg" alt="Banquet">
+                        </a>                        
+                    </div>
+                </div>
+
+            </div>
+        </div><!--/.row -->
 
         <div class="row">
             <div class="col-md-8">
-
+                
+                <?= $form->field($model, 'reserve_comment')->textarea(['rows' => 6])->label('รายละเอียดอื่นๆ') ?>
+                
                 <?= $form->field($model, 'reserve_remark')->textarea(['rows' => 6])->label('หมายเหตุ') ?>
                 
                 <?php // Set textInput options
@@ -225,11 +286,35 @@ use common\models\Department;
                             <div class="panel-body">
 
                                 <?= $form->field($model, 'reserve_equipment')
-                                        ->checkBoxList(ArrayHelper::map(
+                                        ->checkBoxList(
+                                            ArrayHelper::map(
                                                 RoomEquipment::find()->All(), 
                                                 'equipment_id', 'equipment_name'
-                                        ))
-                                        ->label('อุปกรณ์') ?>
+                                            ),
+                                            [
+                                                'onclick'   => new JsExpression('                                                    
+                                                    if($(event.target).val() != 9){
+                                                        $.each($("input[type=\"checkbox\"]"), function(index){
+                                                            if($(this).val()==9){
+                                                                $(this).prop("checked", false);
+                                                            }
+                                                        });
+                                                        
+                                                        $(this).prop("checked", true);
+                                                    }else{
+                                                        $.each($("input[type=\"checkbox\"]"), function(index){
+                                                            if($(this).val()!=9){
+                                                                $(this).prop("checked", false);
+                                                            }
+                                                        });
+                                                        
+                                                        $(this).prop("checked", true);
+                                                    }                                                    
+                                                ')
+                                            ]
+                                        )
+                                        ->label('อุปกรณ์')
+                                ?>
                             
                             </div>
                         </div>
@@ -246,15 +331,25 @@ use common\models\Department;
                     <div class="col-xs-5 col-sm-3 col-md-3"></div>
                     <div class="col-xs-7 col-sm-9 col-md-9">
 
-                        <?= Html::submitButton(
+                        <?= Html::button(
                             $model->isNewRecord ? 'บันทึก' : 'แก้ไข', 
-                            ['class' => ($model->isNewRecord ? 'btn btn-success' : 'btn btn-primary')]
+                            [
+                                'class'     => ($model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'),
+                                'onclick'   => new JsExpression('
+                                    if($("#hasError").val()==1){
+                                        event.preventDefault();
+                                        alert("เกิดข้อผิดพลาด!!!");
+                                    }else{
+                                        $("#reservation-form").submit();
+                                    }
+                                ')
+                            ]
                         ) ?>
                         
                     </div>
                 </div>
             </div>
-        </div><!--/.row --> 
+        </div><!--/.row -->
         
         <?= (Yii::$app->user->identity->person_username == 'admin') ?
             $form->field($model, 'reserve_user')->textInput()->label('ผู้จอง') :
@@ -267,7 +362,19 @@ use common\models\Department;
                         ->hiddenInput(['value' => '1'])
                         ->label(false) : '';
         ?>
+        
+        <?= Html::hiddenInput('hasError', '0', ['id' => 'hasError']); ?>
 
     <?php ActiveForm::end(); ?>
+
+    <?php $model->isNewRecord ? $this->registerJs(
+        '$(document).ready(function(){
+            $.each($("input[type=\"checkbox\"]"), function(index){
+                if($(this).val()==9){
+                    $(this).prop("checked", true);
+                }
+            });
+        })', $this::POS_END) : ''; 
+    ?>
 
 </div>
