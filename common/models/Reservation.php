@@ -52,7 +52,7 @@ class Reservation extends \yii\db\ActiveRecord
             [['reserve_topic', 'reserve_tel', 'reserve_comment', 'reserve_remark', 'created_by', 'modified_by'], 'string'],
             [['reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_depart', 'reserve_user', 'reserve_status'], 'integer'],
             [['reserve_budget', 'reserve_pay_rate', 'reserve_pay_price'], 'number'],
-            [['reserve_topic', 'reserve_sdate', 'reserve_stime', 'reserve_edate', 'reserve_etime', 'reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_equipment', 'reserve_depart', 'created_at', 'modified_at'], 'safe'],
+            [['reserve_topic', 'reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_equipment', 'reserve_depart', 'reserve_tel'], 'required'],
         ];
     }
 
@@ -71,9 +71,9 @@ class Reservation extends \yii\db\ActiveRecord
             'reserve_stime' => 'Reserv Stime',
             'reserve_edate' => 'Reserv Edate',
             'reserve_etime' => 'Reserv Etime',
-            'reserve_room' => 'Reserv Room',
+            'reserve_room' => 'ห้องประชุม',
             'reserve_equipment' => 'อุปกรณ์',
-            'reserve_depart' => 'กลุ่มงาน',
+            'reserve_depart' => 'หน่วยงานผู้จอง',
             'reserve_user' => 'Reserv User',
             'reserve_tel' => 'เบอร์ติดต่อภายใน',
             'reserv_budget' => 'งบประมาณ',

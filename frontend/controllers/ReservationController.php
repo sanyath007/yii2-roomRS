@@ -187,11 +187,12 @@ class ReservationController extends Controller {
         return $this->redirect(['index']);
     }
     
-    public function actionPrint($id) {
-        return $this->redirect('print', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+//    public function actionPrint($id) {
+//        return $this->redirect('print', [
+//            'model' => $this->findModel($id),
+//        ]);
+//    }
+    
     /**
      * Finds the Reservation model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
