@@ -52,6 +52,7 @@ class Reservation extends \yii\db\ActiveRecord
             [['reserve_topic', 'reserve_tel', 'reserve_comment', 'reserve_remark', 'created_by', 'modified_by'], 'string'],
             [['reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_depart', 'reserve_user', 'reserve_status'], 'integer'],
             [['reserve_budget', 'reserve_pay_rate', 'reserve_pay_price'], 'number'],
+            [['reserve_sdate', 'reserve_stime', 'reserve_edate', 'reserve_etime', 'created_at', 'modified_at'], 'safe'],
             [['reserve_topic', 'reserve_activity_type', 'reserve_att_num', 'reserve_layout', 'reserve_room', 'reserve_equipment', 'reserve_depart', 'reserve_tel'], 'required'],
         ];
     }
